@@ -2,62 +2,61 @@ version: "3.9"
 
 services:
   postgres:
-    image: postgres:15
+    image: postgres:15-alpine
     container_name: tradeverse_postgres
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: tradeverse
+    ports:
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
-    image: redis:7
+    image: redis:7-alpine
     container_name: tradeverse_redis
     restart: always
-
-  app:
-    image: tradeverse-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    env_file:
-      - .env
-    depends_on:
-      - postgres
-      - redis
-
-  admin:
-    extends:
-      service: app
-    environment:
-      APP_ROLE: admin
     ports:
-      - "8081:8080"
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  trader:
-    extends:
-      service: app
-    environment:
-      APP_ROLE: trader
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v23.3.1
+    container_name: tradeverse_redpanda
+    restart: always
+    command:
+      - redpanda
+      - start
+      - --smp
+      - "1"
+      - --reserve-memory
+      - 0M
+      - --overprovisioned
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
     ports:
-      - "8082:8080"
-
-  customer:
-    extends:
-      service: app
-    environment:
-      APP_ROLE: customer
-    ports:
-      - "8083:8080"
-
-  cron_worker:
-    extends:
-      service: app
-    environment:
-      APP_ROLE: cron
+      - "9092:9092"
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster info || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
+  redis_data:
