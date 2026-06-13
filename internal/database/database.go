@@ -15,7 +15,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/rs/zerolog/log"
 
-	"github.com/fathimasithara01/tradeverse/internal/config"
+	"github.com/fathimasithara01/multitrade-platform/internal/config"
 )
 
 func ConnectDB(ctx context.Context, cfg *config.Config) (*sqlx.DB, error) {

@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -47,7 +48,15 @@ type JWTConfig struct {
 }
 
 func LoadConfig() (*Config, error) {
-	viper.SetConfigFile(".env")
+	// Find .env file by walking up parent directories
+	configFile := ".env"
+	for i := 0; i < 5; i++ {
+		if _, err := os.Stat(configFile); err == nil {
+			viper.SetConfigFile(configFile)
+			break
+		}
+		configFile = "../" + configFile
+	}
 	viper.AutomaticEnv()
 
 	// Allows nested configurations to be read properly via environment variables
@@ -60,7 +69,7 @@ func LoadConfig() (*Config, error) {
 	viper.SetDefault("DB_PORT", "5432")
 	viper.SetDefault("DB_USER", "postgres")
 	viper.SetDefault("DB_PASS", "postgrespassword")
-	viper.SetDefault("DB_NAME", "tradeverse")
+	viper.SetDefault("DB_NAME", "tradecore")
 	viper.SetDefault("DB_SSLMODE", "disable")
 	viper.SetDefault("REDIS_HOST", "localhost")
 	viper.SetDefault("REDIS_PORT", "6379")

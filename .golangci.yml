@@ -1,0 +1,66 @@
+# golangci-lint configuration
+# Run with: golangci-lint run ./...
+# Install: https://golangci-lint.run/usage/install/
+
+run:
+  timeout: 5m
+  go: "1.24"
+  modules-download-mode: readonly
+
+linters:
+  enable:
+    - errcheck        # check that errors are handled
+    - gosimple        # simplification suggestions
+    - govet           # reports suspicious constructs
+    - ineffassign     # detect ineffectual assignments
+    - staticcheck     # comprehensive static analysis
+    - unused          # unused code
+    - gofmt           # formatting
+    - goimports       # import ordering
+    - godot           # doc comment punctuation
+    - misspell        # spelling corrections
+    - noctx           # HTTP requests without context
+    - bodyclose       # HTTP response body close
+    - contextcheck    # context propagation
+    - durationcheck   # incorrect duration multiplications
+    - exportloopref   # loop variable capture
+    - nilerr          # returning nil error with non-nil value
+    - unparam         # unused function parameters
+    - wsl             # whitespace linter (Go-idiomatic spacing)
+
+  disable:
+    - exhaustruct     # too noisy for this project size
+    - gochecknoglobals # Prometheus metrics intentionally global
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+
+  goimports:
+    local-prefixes: github.com/fathimasithara01/multitrade-platform
+
+  misspell:
+    locale: US
+
+  godot:
+    scope: declarations
+    capital: true
+
+issues:
+  exclude-rules:
+    # Test files get relaxed rules
+    - path: "_test\\.go"
+      linters:
+        - errcheck
+        - unparam
+        - wsl
+
+    # Generated Swagger docs are not hand-written
+    - path: "internal/docs"
+      linters:
+        - godot
+        - goimports
+
+  max-issues-per-linter: 50
+  max-same-issues: 10

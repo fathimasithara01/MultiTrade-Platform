@@ -1,0 +1,59 @@
+version: "3.9"
+
+# Production-oriented compose file.
+# Usage: docker compose -f docker-compose.yml -f deployments/docker-compose.prod.yml up -d
+#
+# Differences from base docker-compose.yml:
+#  - API server container added (uses built image, not bind-mount)
+#  - All services use restart: always
+#  - No exposed development ports on Postgres / Redis
+#  - Nginx reverse proxy with basic headers
+
+services:
+
+  api:
+    image: multitrade:latest
+    container_name: multitrade_api
+    restart: always
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - internal
+
+  postgres:
+    expose:
+      - "5432"
+    networks:
+      - internal
+
+  redis:
+    expose:
+      - "6379"
+    networks:
+      - internal
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: multitrade_nginx
+    restart: always
+    volumes:
+      - ./deployments/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge

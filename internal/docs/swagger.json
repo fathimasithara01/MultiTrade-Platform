@@ -1,0 +1,28 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A multi-role trading platform with order matching, wallets, and real-time WebSocket price feeds.",
+        "title": "MultiTrade Platform API",
+        "termsOfService": "http://localhost:8080/terms/",
+        "contact": {
+            "name": "TradeVerse Engineering",
+            "email": "engineering@tradeverse.io"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {},
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "\"Type: Bearer \u003ctoken\u003e\"",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

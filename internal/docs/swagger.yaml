@@ -1,0 +1,22 @@
+basePath: /
+host: localhost:8080
+info:
+  contact:
+    email: engineering@tradeverse.io
+    name: TradeVerse Engineering
+  description: A multi-role trading platform with order matching, wallets, and real-time
+    WebSocket price feeds.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://localhost:8080/terms/
+  title: MultiTrade Platform API
+  version: "1.0"
+paths: {}
+securityDefinitions:
+  BearerAuth:
+    description: '"Type: Bearer <token>"'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

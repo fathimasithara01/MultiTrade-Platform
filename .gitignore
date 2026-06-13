@@ -1,9 +1,45 @@
+# ── Secrets & environment ─────────────────────────────────────────────────────
 .env
+*.env.local
+*.pem
+*.key
+*.crt
 
-# Go binaries
-*.exe
-*.test
-
-# Compiled files
-/vendor/
+# ── Go build artefacts ────────────────────────────────────────────────────────
 /bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# ── IDE & editors ─────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Test & coverage ───────────────────────────────────────────────────────────
+coverage.out
+coverage.html
+*.coverprofile
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+# Keep docker-compose.yml tracked; ignore override files
+docker-compose.override.yml
+
+# ── Generated files ───────────────────────────────────────────────────────────
+# Swagger docs are generated — regenerate with: make swagger
+# Uncomment the line below if you prefer not to track generated docs
+# internal/docs/
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+ehthumbs.db
+Desktop.ini
